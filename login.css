@@ -1,0 +1,100 @@
+:root {
+    --oscuro: #4D52B4;
+    --medio: #4E9CE8;
+    --vivo: #70D6C5;
+    --suave: #CAE5BC;
+    --hielo: #E1EDD4;
+    --texto: #181616;
+}
+
+.login {
+    background: linear-gradient(160deg, var(--oscuro) 0%, var(--medio) 40%, var(--vivo) 75%, var(--suave) 100%);
+}
+
+.login-card {
+    border: 0;
+    border-radius: 1rem;
+    background: var(--hielo);
+    color: var(--texto);
+    box-shadow: 0 20px 40px rgba(77, 82, 180, .35);
+}
+
+.login-card h3 {
+    font-weight: 700;
+    color: var(--oscuro);
+}
+
+.login-logo {
+    height: 250px;
+    margin-bottom: 1.5rem;
+    border-radius: 1rem;
+    background: url("img/logo.png") center / cover no-repeat;
+}
+
+.form-label {
+    margin-top: .4rem;
+    font-weight: 600;
+    color: var(--oscuro);
+}
+
+.form-control {
+    border: 2px solid var(--suave);
+}
+
+.form-control:focus {
+    border-color: var(--medio);
+    box-shadow: 0 0 0 .25rem rgba(78, 156, 232, .25);
+}
+
+.form-check-input:checked {
+    background-color: var(--oscuro);
+    border-color: var(--oscuro);
+}
+
+.form-check-input:focus {
+    border-color: var(--medio);
+    box-shadow: 0 0 0 .25rem rgba(78, 156, 232, .25);
+}
+
+.login-card a {
+    font-weight: 600;
+    color: var(--oscuro);
+    text-decoration: none;
+}
+
+.login-card a:hover {
+    color: var(--medio);
+    text-decoration: underline;
+}
+
+.login-card .btn-primary,
+.btn-google,
+.btn-facebook {
+    background: var(--oscuro);
+    border-color: var(--oscuro);
+    color: var(--hielo);
+    font-weight: 600;
+    transition: .2s;
+}
+
+.btn-google {
+    background: var(--medio);
+    border-color: var(--medio);
+    color: var(--texto);
+}
+
+.login-card .btn-primary:hover,
+.login-card .btn-primary:focus,
+.btn-google:hover,
+.btn-facebook:hover {
+    background: var(--vivo);
+    border-color: var(--vivo);
+    color: var(--texto);
+}
+
+.btn-floating {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border-radius: 50%;
+}

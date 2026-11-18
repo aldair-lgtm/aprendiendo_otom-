@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Registro de Usuario</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="regisro.css">
+</head>
+
+<body>
+
+    <div class="formulario">
+        <h2>Registro Usuario</h2>
+
+        <form id="formRegistro">
+            <input type="text" name="nombre" placeholder="Nombre" required>
+
+            <input type="email" name="email" placeholder="Correo electronico" required>
+
+            <input type="password" name="contrasena" maxlength="6" placeholder="Contrasena" required>
+
+            <input type="date" name="fecha_nac" required>
+
+            <input type="text" name="pais" placeholder="Pais" required>
+
+            <input type="number" name="nivel" min="1" max="99" placeholder="Nivel" required>
+
+            <button type="submit">Registrarse</button>
+        </form>
+
+        <div id="mensaje"></div>
+    </div>
+
+    <script>
+        document.getElementById("formRegistro")
+        .addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            const datos = {
+                nombre: this.nombre.value,
+                email: this.email.value,
+                contrasena: this.contrasena.value,
+                fecha_nac: this.fecha_nac.value,
+                pais: this.pais.value,
+                nivel: this.nivel.value
+            };
+
+            try {
+                const respuesta = await fetch("registro.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await respuesta.json();
+
+                document.getElementById("mensaje").innerHTML = resultado.mensaje;
+
+                if (resultado.estado) {
+                    this.reset();
+                    setTimeout(() => {
+                        window.location.href = resultado.redirect || "unidad1.html";
+                    }, 800);
+                }
+
+            } catch (error) {
+                console.error(error);
+            }
+        });
+    </script>
+
+</body>
+</html>

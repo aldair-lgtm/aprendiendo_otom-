@@ -1,0 +1,111 @@
+:root {
+    --oscuro: #4D52B4;
+    --medio: #4E9CE8;
+    --vivo: #70D6C5;
+    --suave: #CAE5BC;
+    --hielo: #E1EDD4;
+    --texto: #181616;
+    --error: #b3261e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 24px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Bricolage Grotesque", Arial, sans-serif;
+    color: var(--texto);
+    background: linear-gradient(160deg, var(--oscuro) 0%, var(--medio) 40%, var(--vivo) 75%, var(--suave) 100%) fixed;
+}
+
+.formulario {
+    width: min(420px, 100%);
+    padding: 28px 26px 26px;
+    background: var(--hielo);
+    border: 3px solid var(--texto);
+    border-radius: 14px;
+    box-shadow: 8px 8px 0 var(--texto);
+}
+
+.formulario h2 {
+    margin: 0 0 18px;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    color: var(--oscuro);
+}
+
+input {
+    width: 100%;
+    padding: 12px 14px;
+    margin: 7px 0;
+    font: inherit;
+    font-weight: 500;
+    color: var(--texto);
+    background: #fff;
+    border: 2px solid var(--texto);
+    border-radius: 8px;
+    transition: box-shadow .15s, background .15s;
+}
+
+input::placeholder { color: rgba(24, 22, 22, .55); }
+
+input:focus {
+    outline: none;
+    background: #fbfffa;
+    box-shadow: 0 0 0 4px var(--medio);
+}
+
+input:user-invalid { border-color: var(--error); }
+
+button {
+    width: 100%;
+    margin-top: 14px;
+    padding: 13px;
+    font: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--hielo);
+    background: var(--oscuro);
+    border: 3px solid var(--texto);
+    border-radius: 10px;
+    box-shadow: 4px 4px 0 var(--texto);
+    cursor: pointer;
+    transition: transform .1s, box-shadow .1s, background .15s, color .15s;
+}
+
+button:hover {
+    background: var(--vivo);
+    color: var(--texto);
+}
+
+button:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0 0 0 var(--texto);
+}
+
+button:focus-visible {
+    outline: 3px solid var(--medio);
+    outline-offset: 3px;
+}
+
+#mensaje {
+    margin-top: 16px;
+    padding: 10px 12px;
+    font-weight: 700;
+    text-align: center;
+    background: var(--vivo);
+    border: 2px solid var(--texto);
+    border-radius: 8px;
+}
+
+#mensaje:empty { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}

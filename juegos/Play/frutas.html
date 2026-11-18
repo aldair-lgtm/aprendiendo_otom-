@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuchillo a la fruta</title>
+<style>
+:root{--bg:#fdf3e3;--fg:#3a2a1a;--card:#fff8ec;--acc:#e5484d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1812;--fg:#f4e6d0;--card:#2a2219;--acc:#ff6b70}}
+:root[data-theme="dark"]{--bg:#1d1812;--fg:#f4e6d0;--card:#2a2219;--acc:#ff6b70}
+html{height:100%}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+<div style="width:min(92vw,380px);text-align:center">
+  <div style="display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:18px;padding:6px 4px">
+    <span>Puntos: <span id="pts">0</span></span>
+    <span id="vidas" style="letter-spacing:2px">❤️❤️❤️</span>
+    <span>Récord: <span id="rec">0</span></span>
+  </div>
+  <canvas id="c" style="width:100%;border-radius:16px;background:var(--card);touch-action:none;display:block;box-shadow:0 4px 18px rgba(0,0,0,.18);cursor:crosshair"></canvas>
+  <p style="font-size:14px;opacity:.75;margin:10px 0 0">Mueve el cursor o el dedo y toca para lanzar. También: ← → y espacio.</p>
+</div>
+<script>
+const cv=document.getElementById('c'),ctx=cv.getContext('2d');
+const W=360,H=560,dpr=window.devicePixelRatio||1;
+cv.width=W*dpr;cv.height=H*dpr;ctx.scale(dpr,dpr);
+const $=id=>document.getElementById(id);
+const FRUTAS=['🍎','🍉','🍊','🍓','🍍','🍑','🍐','🍋'];
+let best=0;try{best=+localStorage.getItem('cf_best')||0}catch(e){}
+$('rec').textContent=best;
+let s;
+function reset(){s={score:0,lives:3,state:'ready',kx:W/2,knife:null,parts:[],msg:'',msgT:0,f:newFruit(0)};ui()}
+function newFruit(n){return{x:W/2,t:Math.random()*6,vx:(Math.random()<.5?-1:1)*(1.6+Math.min(n,15)*.22),e:FRUTAS[Math.floor(Math.random()*FRUTAS.length)],r:34,y:150}}
+function ui(){$('pts').textContent=s.score;$('vidas').textContent=s.lives>0?'❤️'.repeat(s.lives):'💀'}
+function throwK(){
+  if(s.state==='over'){reset();return}
+  if(s.state==='ready')s.state='play';
+  if(!s.knife)s.knife={x:s.kx,y:H-70,v:-14};
+}
+function pos(e){const r=cv.getBoundingClientRect();return(e.clientX-r.left)*W/r.width}
+cv.addEventListener('pointermove',e=>{s.kx=Math.max(20,Math.min(W-20,pos(e)))});
+cv.addEventListener('pointerdown',e=>{s.kx=Math.max(20,Math.min(W-20,pos(e)));throwK()});
+addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft')s.kx=Math.max(20,s.kx-18);
+  if(e.key==='ArrowRight')s.kx=Math.min(W-20,s.kx+18);
+  if(e.code==='Space'){e.preventDefault();throwK()}
+});
+function splash(f){
+  for(let i=0;i<2;i++)s.parts.push({k:'half',e:f.e,x:f.x,y:f.y,vx:(i?1:-1)*(2+Math.random()*2),vy:-4,a:0,va:(i?1:-1)*.2,side:i,life:60});
+  for(let i=0;i<14;i++)s.parts.push({k:'dot',x:f.x,y:f.y,vx:(Math.random()-.5)*9,vy:(Math.random()-.8)*8,life:40});
+}
+function say(t){s.msg=t;s.msgT=45}
+function update(){
+  if(s.state==='play'){
+    const f=s.f;f.t+=.03;f.x+=f.vx;
+    if(f.x<f.r||f.x>W-f.r)f.vx*=-1;
+    f.y=150+Math.sin(f.t*2)*45;
+    const k=s.knife;
+    if(k){
+      k.y+=k.v;
+      if(Math.hypot(k.x-f.x,(k.y-40)-f.y)<f.r+6||Math.hypot(k.x-f.x,k.y-f.y)<f.r){
+        splash(f);s.score++;s.knife=null;say('¡Dio en el blanco!');
+        s.f=newFruit(s.score);
+        if(s.score>best){best=s.score;$('rec').textContent=best;try{localStorage.setItem('cf_best',best)}catch(e){}}
+        ui();
+      }else if(k.y<-60){
+        s.knife=null;s.lives--;say('¡Fallaste!');ui();
+        if(s.lives<=0)s.state='over';
+      }
+    }
+  }
+  s.parts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.35;p.life--;if(p.k==='half')p.a+=p.va});
+  s.parts=s.parts.filter(p=>p.life>0);
+  if(s.msgT>0)s.msgT--;
+}
+function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim()}
+function knife(x,y,alpha){
+  ctx.save();ctx.translate(x,y);ctx.globalAlpha=alpha||1;
+  ctx.fillStyle='#8a5a2b';ctx.beginPath();ctx.roundRect(-5,18,10,32,3);ctx.fill();
+  ctx.fillStyle='#555';ctx.fillRect(-7,14,14,5);
+  ctx.fillStyle='#d8dde3';ctx.beginPath();ctx.moveTo(-6,15);ctx.lineTo(-6,-12);ctx.quadraticCurveTo(-4,-30,0,-40);ctx.lineTo(6,15);ctx.closePath();ctx.fill();
+  ctx.fillStyle='#fff';ctx.fillRect(-2,-20,2,30);
+  ctx.restore();
+}
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const fg=css('--fg'),acc=css('--acc');
+  ctx.globalAlpha=.12;ctx.fillStyle=fg;ctx.fillRect(0,H-6,W,6);ctx.globalAlpha=1;
+  ctx.font='64px serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  if(s.state!=='over'||s.parts.length){
+    if(s.state!=='over'){ctx.fillText(s.f.e,s.f.x,s.f.y)}
+  }
+  s.parts.forEach(p=>{
+    if(p.k==='half'){
+      ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.a);ctx.globalAlpha=p.life/60;
+      ctx.beginPath();ctx.rect(p.side?0:-40,-40,40,80);ctx.clip();
+      ctx.fillText(p.e,0,0);ctx.restore();
+    }else{
+      ctx.globalAlpha=p.life/40;ctx.fillStyle=acc;ctx.beginPath();ctx.arc(p.x,p.y,3,0,7);ctx.fill();
+    }
+  });
+  ctx.globalAlpha=1;
+  if(s.knife)knife(s.knife.x,s.knife.y);
+  else if(s.state!=='over'){knife(s.kx,H-70,.9)}
+  ctx.textAlign='center';ctx.fillStyle=fg;
+  if(s.msgT>0){ctx.font='700 22px system-ui,sans-serif';ctx.globalAlpha=Math.min(1,s.msgT/20);ctx.fillText(s.msg,W/2,60);ctx.globalAlpha=1}
+  if(s.state==='ready'){ctx.font='700 24px system-ui,sans-serif';ctx.fillText('¡Atínale a la fruta!',W/2,H/2+20);ctx.font='16px system-ui,sans-serif';ctx.fillText('Toca para lanzar el cuchillo',W/2,H/2+50)}
+  if(s.state==='over'){
+    ctx.font='700 30px system-ui,sans-serif';ctx.fillText('Fin del juego',W/2,H/2-20);
+    ctx.font='20px system-ui,sans-serif';ctx.fillText('Puntos: '+s.score,W/2,H/2+16);
+    ctx.fillStyle=acc;ctx.font='700 18px system-ui,sans-serif';ctx.fillText('Toca para jugar de nuevo',W/2,H/2+52);
+  }
+}
+function loop(){update();draw();requestAnimationFrame(loop)}
+reset();loop();
+</script>
+</body>
+</html>

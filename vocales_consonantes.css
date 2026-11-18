@@ -1,0 +1,256 @@
+:root {
+    --fondo: #f4fbfb;
+    --texto: #12343b;
+    --principal: #0b7a75;      /* botones y barra */
+    --principal-osc: #075a56;
+    --secundario: #1b4f72;
+    --borde: #cfe3e3;
+    --tarjeta: #ffffff;
+    --correcto: #2e9e5b;
+    --correcto-fondo: #e3f6ea;
+    --error: #d64545;
+    --error-fondo: #fde8e8;
+    --seleccion: #e0f1fa;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    text-align: center;
+}
+
+header {
+    position: relative;
+    padding: 14px 20px;
+    background: var(--tarjeta);
+    border-bottom: 2px solid var(--borde);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.enlace-perfil {
+    position: absolute;
+    right: 20px;
+    top: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    color: inherit;
+}
+
+#vidas.perdida {
+    animation: sacudir 0.4s;
+}
+
+@keyframes sacudir {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
+.progreso-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 700px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+
+.progreso-barra {
+    flex: 1;
+    height: 16px;
+    background: var(--borde);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progreso-relleno {
+    height: 100%;
+    width: 0%;
+    background: var(--principal);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+}
+
+.progreso-texto {
+    font-weight: 700;
+    min-width: 44px;
+}
+
+section {
+    display: none;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+}
+
+section.activa {
+    display: block;
+}
+
+section h3 {
+    margin: 0 0 6px;
+    color: var(--secundario);
+}
+
+section h1 {
+    margin: 0 0 24px;
+    font-size: 28px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.card {
+    width: 200px;
+    padding: 18px 12px;
+    background: var(--tarjeta);
+    border: 2px solid var(--borde);
+    border-bottom-width: 5px;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: transform 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+}
+
+.card h3 {
+    margin: 10px 0 0;
+    color: var(--texto);
+    font-size: 20px;
+}
+
+.card.seleccionada {
+    background: var(--seleccion);
+    border-color: var(--secundario);
+}
+
+.card.correcta {
+    background: var(--correcto-fondo);
+    border-color: var(--correcto);
+}
+
+.card.incorrecta {
+    background: var(--error-fondo);
+    border-color: var(--error);
+}
+
+.emoji {
+    display: block;
+    font-size: 64px;
+    line-height: 1.2;
+}
+
+.letra-grande {
+    display: block;
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: var(--principal);
+}
+
+.nota-palabra {
+    display: block;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+.entrada {
+    width: 100%;
+    max-width: 360px;
+    padding: 14px 16px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid var(--borde);
+    border-radius: 14px;
+    outline: none;
+}
+
+.entrada:focus {
+    border-color: var(--principal);
+}
+
+/* ===== Botones ===== */
+.botones {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+.comprobar,
+.saltar {
+    padding: 14px 32px;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+}
+
+.comprobar {
+    background: var(--principal);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--principal-osc);
+}
+
+.comprobar:hover {
+    background: var(--principal-osc);
+}
+
+.saltar {
+    background: transparent;
+    color: var(--secundario);
+    border: 2px solid var(--borde);
+}
+
+.saltar:hover {
+    background: var(--seleccion);
+}
+
+.resultado {
+    min-height: 28px;
+    margin-top: 18px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+#gameover {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    background: rgba(18, 52, 59, 0.85);
+}
+
+#gameover.visible {
+    display: flex;
+}
+
+.gameover-caja {
+    max-width: 380px;
+    padding: 32px;
+    background: var(--tarjeta);
+    border-radius: 20px;
+}
+
+.gameover-caja h1 {
+    margin: 0 0 10px;
+    font-size: 26px;
+}

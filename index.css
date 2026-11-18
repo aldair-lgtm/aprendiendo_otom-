@@ -1,0 +1,230 @@
+
+:root {
+    --oscuro: #0F4C5C;
+    --medio: #187C81;
+    --vivo: #2A9D8F;
+    --suave: #A8DADC;
+    --naranja: #F97316;
+    --durazno: #FDBA74;
+    --rojo: #DC2626;
+    --crema: #FFE4C7;
+    --marfil: #FFF7ED;
+    --texto: #181616;
+}
+
+* { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", system-ui, Arial, sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(var(--marfil), var(--crema)) fixed;
+    color: var(--texto);
+}
+
+:focus-visible { outline: 2px solid var(--naranja); }
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 230px;
+    padding: 24px 16px;
+    background: var(--oscuro);
+    border-right: 5px solid var(--naranja);
+    overflow-y: auto;
+}
+
+.logo {
+    margin-bottom: 28px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--durazno);
+}
+
+.menu-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.menu-links li { margin-bottom: 6px; }
+
+.menu-links a {
+    display: block;
+    padding: 12px 16px;
+    border-radius: 12px;
+    color: var(--marfil);
+    text-decoration: none;
+    font-weight: 700;
+    transition: .2s;
+}
+
+.menu-links a:hover {
+    background: var(--medio);
+    color: var(--marfil);
+}
+nav:not(.sidebar) {
+    position: sticky;
+    top: 14px;
+    z-index: 10;
+    margin-left: 230px;
+    padding: 0 24px;
+    pointer-events: none;
+}
+
+nav:not(.sidebar) ul {
+    pointer-events: auto;
+    display: flex;
+    gap: 4px;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 8px 12px;
+    list-style: none;
+    background: var(--marfil);
+    border-radius: 999px;
+    box-shadow: 0 8px 20px rgba(15, 76, 92, .18);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+nav:not(.sidebar) li { flex: 1 1 auto; }
+
+nav:not(.sidebar) a {
+    display: block;
+    padding: 10px 22px;
+    border-radius: 999px;
+    text-align: center;
+    white-space: nowrap;
+    font-size: .9rem;
+    font-weight: 500;
+    color: var(--oscuro);
+    text-decoration: none;
+    transition: .3s;
+}
+
+nav:not(.sidebar) a:hover {
+    background: var(--oscuro);
+    color: var(--marfil);
+}
+
+section {
+    margin-left: 230px;
+    padding: 48px 40px;
+}
+
+h1, h2 {
+    margin-top: 0;
+    color: var(--oscuro);
+}
+
+h2 {
+    display: inline-block;
+    padding-bottom: 10px;
+    border-bottom: 4px solid var(--acento);
+}
+
+strong {
+    background: linear-gradient(transparent 60%, rgba(249, 115, 22, .3) 60%);
+}
+
+
+#inicio {
+    --acento: var(--naranja);
+    max-width: 1100px;
+}
+
+#lugares {
+    --acento: var(--vivo);
+    --claro: var(--suave);
+}
+
+#platillos {
+    --acento: var(--naranja);
+    --claro: var(--durazno);
+}
+
+#tradiciones {
+    --acento: var(--rojo);
+    --claro: var(--crema);
+}
+
+
+.image { display: flex; justify-content: center; }
+
+.image img {
+    width: 100%;
+    max-width: 360px;
+    border: 4px solid var(--oscuro);
+    border-radius: 20px;
+}
+
+
+section:not(#inicio) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 320px));
+    justify-content: center;
+    gap: 24px;
+}
+
+section:not(#inicio) h2 {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin: 0;
+}
+
+.lugar {
+    display: grid;
+    grid-template-rows: 1fr auto auto;
+    height: 470px;
+    overflow: hidden;
+    border-radius: 20px;
+    border-bottom: 8px solid var(--acento);
+    background: var(--oscuro);
+    box-shadow: 0 6px 18px rgba(15, 76, 92, .25);
+}
+
+.imagen {
+    grid-area: 1 / 1 / 4;
+    position: relative;
+}
+
+.imagen img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.imagen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 30%, rgba(15, 76, 92, .92));
+}
+
+.lugar h3,
+.lugar p {
+    z-index: 2;
+    margin: 0;
+    padding: 0 18px 6px;
+}
+
+.lugar h3 {
+    align-self: end;
+    font-size: 1.2rem;
+    color: var(--claro);
+}
+
+.lugar p {
+    padding-bottom: 18px;
+    font-size: .9rem;
+    line-height: 1.4;
+    color: var(--marfil);
+}
+

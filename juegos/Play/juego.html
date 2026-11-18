@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Colores en otomí</title>
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+
+<nav>
+    <h1>Colores en otomi</h1>
+    <h3 id="nivel"></h3>
+    <p>Correctos = <span id="aciertos">0</span></p>
+</nav>
+
+<nav>
+    <section id="izq"></section>
+
+    <section id="centro">
+        <div id="colores"></div>
+        <p id="mensaje"></p>
+        <button onclick="iniciar()">Reiniciar</button>
+        <button id="siguiente" onclick="avanzar()" hidden>Siguiente nivel</button>
+    </section>
+
+    <section id="der"></section>
+</nav>
+
+<script>
+const datos = [
+    ["Morado", "kjuföi", "#8052a6"],
+    ["Verde", "Paxi", "#329447"],
+    ["Cafe", "boxo", "#7b4a2b"],
+    ["Blanco", "t'axi", "#ffffff"],
+    ["Gris", "Gospi", "#a6a6a6"],
+    ["Pinto", "bindo", "#d2b08c"],
+    ["Amarillo", "k'axti", "#f5d21c"],
+    ["Azul", "k'angi", "#2e70d1"],
+    ["Rosa", "roxa", "#ef8db2"],
+    ["Naranja", "naranxa", "#f29a12"],
+    ["Negro", "bot'i", "#222222"],
+    ["Rojo", "Theni", "#d82e35"]
+];
+
+const cantidades = [3, 5, 7, 10, 12];
+let nivel = 0;
+let aciertos = 0;
+let total = 0;
+
+function mezclar(lista) {
+    return [...lista].sort(() => Math.random() - 0.5);
+}
+
+function iniciar() {
+    const lista = datos.slice(0, cantidades[nivel]);
+    const mitad = Math.ceil(lista.length / 2);
+    aciertos = 0;
+    total = lista.length;
+
+    // Se vacía todo
+    document.getElementById("colores").innerHTML = "";
+    document.getElementById("izq").innerHTML = "";
+    document.getElementById("der").innerHTML = "";
+    document.getElementById("nivel").textContent = "Nivel " + (nivel + 1) + " de 5";
+    document.getElementById("aciertos").textContent = 0;
+    document.getElementById("mensaje").textContent = "Haz click y arrastra a su lugar";
+    document.getElementById("siguiente").hidden = true;
+
+    // Círculos de colores (al centro)
+    for (const c of mezclar(lista)) {
+        const circulo = document.createElement("button");
+        circulo.className = "color";
+        circulo.id = "c-" + c[0];
+        circulo.style.background = c[2];
+        circulo.draggable = true;
+        circulo.ondragstart = e => e.dataTransfer.setData("color", c[0]);
+        document.getElementById("colores").appendChild(circulo);
+    }
+
+    // Nombres en otomí (a los lados)
+    mezclar(lista).forEach((c, i) => {
+        const casilla = document.createElement("span");
+        casilla.className = "casilla";
+
+        const palabra = document.createElement("button");
+        palabra.className = "palabra";
+        palabra.appendChild(casilla);
+        palabra.appendChild(document.createTextNode(c[1]));
+
+        palabra.ondragover = e => e.preventDefault();
+        palabra.ondrop = e => soltar(e, palabra, casilla, c);
+
+        if (i < mitad) {
+            document.getElementById("izq").appendChild(palabra);
+        } else {
+            document.getElementById("der").appendChild(palabra);
+        }
+    });
+}
+
+function soltar(e, palabra, casilla, c) {
+    e.preventDefault();
+
+    // Si se equivoca
+    if (e.dataTransfer.getData("color") != c[0]) {
+        document.getElementById("mensaje").textContent = "Intenta otra vez.";
+        return;
+    }
+
+    // Si acierta
+    casilla.style.background = c[2];
+    palabra.disabled = true;
+    document.getElementById("c-" + c[0]).disabled = true;
+
+    aciertos++;
+    document.getElementById("aciertos").textContent = aciertos;
+    document.getElementById("mensaje").textContent = "¡Correcto!";
+
+    if (aciertos == total) {
+        document.getElementById("mensaje").textContent = "¡Nivel completado!";
+        document.getElementById("siguiente").hidden = false;
+    }
+}
+
+function avanzar() {
+    nivel = (nivel + 1) % 5;
+    iniciar();
+}
+
+iniciar();
+</script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi perfil</title>
+<style>
+:root{--o:#4D52B4;--m:#4E9CE8;--v:#70D6C5;--s:#CAE5BC;--h:#E1EDD4;--t:#181616;--g:#6b7280}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;padding-left:230px;min-height:100vh;font-family:"Segoe UI",system-ui,sans-serif;color:var(--t);background:linear-gradient(160deg,var(--o),var(--m) 40%,var(--v) 75%,var(--s)) fixed}
+button{font:inherit;cursor:pointer}
+h1{margin:0;font-size:1.9rem;text-transform:uppercase;color:var(--o)}
+h2{margin:0 0 14px;color:var(--o)}
+hr{border:0;border-top:2px solid #4D52B433;margin:22px 0}
+.sub{color:var(--g);margin:2px 0 8px}
+small,.datos b,.lbl{color:var(--g)}
+
+/* menú lateral */
+.side{position:fixed;inset:0 auto 0 0;width:230px;padding:24px 16px;background:#0F4C5C;border-right:5px solid #F97316;overflow-y:auto;z-index:20}
+.side .logo{display:block;margin-bottom:28px;text-align:center;font-size:1.5rem;font-weight:800;color:#FDBA74;text-decoration:none}
+.side ul{list-style:none;margin:0;padding:0}
+.side li{margin-bottom:6px}.side li.sep{margin-top:26px}
+.side li a{display:block;padding:12px 16px;border-radius:12px;color:#FFF7ED;font-weight:700;text-decoration:none}
+.side li a:hover,.side li a.on{background:#187C81}
+
+/* estructura */
+.top{display:flex;justify-content:space-between;align-items:center;padding:14px 28px;background:#ffffff26}
+.top a,.top button{color:#fff;font-weight:700;text-decoration:none;background:none;border:0}
+.wrap{margin:28px 0;padding:0 28px;display:grid;grid-template-columns:2fr 1fr;gap:22px;align-items:start}
+.card{background:var(--h);border-radius:1rem;padding:22px;box-shadow:0 20px 40px #4D52B44d}
+#error{max-width:500px;margin:60px auto;text-align:center}
+.ban{position:relative;height:170px;margin-bottom:60px;border-radius:1rem;background:linear-gradient(135deg,var(--o),var(--m))}
+.cab{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.datos,.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+.datos{margin-top:14px}
+.datos b,.lbl{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.04em}
+
+/* avatar */
+.av{width:130px;height:130px;border-radius:50%;background:var(--v);border:5px solid var(--h);display:flex;align-items:center;justify-content:center;font-size:3.4rem;font-weight:800;color:#fff;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.an{background:#fff;font-size:4rem}
+#avatar{position:absolute;left:24px;bottom:-45px;cursor:pointer}
+#avatar::after{content:"📷 Cambiar";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#181616a0;color:#fff;font-size:.95rem;font-weight:700;opacity:0;transition:opacity .2s}
+#avatar:hover::after,#avatar:focus-visible::after{opacity:1}
+@media(hover:none){#avatar::after{opacity:1;top:70%;font-size:.75rem}}
+#prev{width:96px;height:96px;margin:0 auto 4px;border-width:4px}
+.fl{width:28px;border-radius:3px;box-shadow:0 0 0 1px #00000026;vertical-align:middle;margin-right:8px}
+.fe{font-size:1.4rem;vertical-align:middle;margin-right:8px}
+
+/* estadísticas, logros, botones */
+.stat,.logro{background:#fff;border-radius:14px;padding:14px;display:flex;gap:12px;align-items:center}
+.stat{border:2px solid var(--s)}
+.stat .ico{font-size:1.8rem}.stat .n{font-size:1.4rem;font-weight:800}.stat .l{font-size:.85rem;color:var(--g)}
+.barra{height:14px;background:#fff;border-radius:99px;overflow:hidden;border:2px solid var(--s)}
+.barra i{display:block;height:100%;background:linear-gradient(90deg,var(--v),var(--m));transition:width .8s}
+.logro{margin-bottom:10px;border:2px solid transparent;gap:14px}
+.logro.hecho{border-color:var(--v)}
+.logro .ico{font-size:2.2rem}.logro.pend .ico{filter:grayscale(1);opacity:.5}
+.logro .info{flex:1}.logro .info b{display:block;margin-bottom:6px}
+small{font-weight:700}
+.btn{display:block;padding:12px;border-radius:12px;background:var(--v);font-weight:700;margin-top:12px;text-align:center;text-decoration:none;color:var(--t)}
+.btn:hover{filter:brightness(.95)}
+#editar{background:var(--o);color:#fff;border:0;border-radius:12px;padding:10px 16px;font-weight:700}
+
+/* ventana de edición */
+.modal{position:fixed;inset:0;background:rgba(24,22,22,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.box{background:var(--h);border-radius:1rem;padding:24px;width:100%;max-width:460px;max-height:92vh;overflow-y:auto}
+.lbl{margin:16px 0 8px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button,#cancelar{padding:10px;border:2px solid var(--s);background:#fff;border-radius:12px;font-weight:700;color:var(--t)}
+.tabs button{flex:1}.tabs .on{border-color:var(--o);background:var(--o);color:#fff}
+#tAn{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+#tAn button{font-size:1.9rem;padding:8px 0;background:#fff;border:2px solid var(--s);border-radius:12px}
+#tAn button:hover{border-color:var(--m)}#tAn .sel{border-color:var(--o);background:#e8e9fb}
+#tFoto{text-align:center}
+#archivo{width:100%;background:#fff;border:2px dashed var(--m);border-radius:12px;padding:12px}
+#ajustes{margin-top:12px;text-align:left;background:#fff;border-radius:12px;padding:10px 14px}
+#ajustes label{display:flex;align-items:center;gap:10px;font-weight:700;font-size:.9rem;margin:6px 0}
+#ajustes input{flex:1}
+#quitar{margin-top:8px;background:none;border:0;color:var(--o);font-weight:700;text-decoration:underline}
+.ps{display:flex;align-items:center;gap:10px}
+.ps .fl{width:36px;margin:0}.ps .fe{margin:0}
+#pais2{flex:1;padding:11px;border-radius:12px;border:2px solid var(--s);font-size:1rem;background:#fff}
+#msg{margin:12px 0 0;font-weight:700;min-height:1.2em;text-align:center}
+.acc{display:flex;gap:10px;margin-top:20px}
+.acc button{flex:1;padding:12px;border-radius:12px;font-weight:700;font-size:1rem}
+#guardar{background:var(--v);border:0;color:var(--t)}
+
+@media(max-width:1000px){.wrap{grid-template-columns:1fr}}
+@media(max-width:800px){
+  body{padding-left:0}.wrap{padding:0 14px}
+  .side{position:static;width:100%;border:0;border-bottom:5px solid #F97316}
+  .side .logo{margin-bottom:12px}
+  .side ul{display:flex;flex-wrap:wrap;gap:6px}.side li,.side li.sep{margin:0}
+}
+</style>
+</head>
+<body>
+<nav class="side">
+  <a class="logo" href="index.html">Doulingo otomi</a>
+  <ul>
+    <li><a href="unidad1.html">APRENDER</a></li>
+    <li><a href="vocales.html">VOCALES</a></li>
+    <li><a href="consonantes.html">CONSONANTES</a></li>
+    <li><a href="perfil.html" class="on">PERFIL</a></li>
+    <li class="sep"><a href="#">JUEGOS</a></li>
+  </ul>
+</nav>
+
+<div class="top"><a href="unidad1.html">← Volver a las lecciones</a><button id="salir">Cerrar sesión</button></div>
+<div id="error" class="card" hidden><h2 id="errorMsg"></h2><a class="btn" href="login.html">Ir al login</a></div>
+
+<div class="wrap" id="contenido" hidden>
+  <div class="card">
+    <div class="ban"><div class="av" id="avatar" role="button" tabindex="0" title="Cambiar foto de perfil">?</div></div>
+    <div class="cab">
+      <div><h1 id="nombre"></h1><p class="sub" id="email"></p><p class="sub" id="union"></p></div>
+      <button id="editar">✏️ Editar perfil</button>
+    </div>
+    <div class="datos">
+      <div><b>País</b><span id="pais"></span></div>
+      <div><b>Fecha de nacimiento</b><span id="nac"></span></div>
+      <div><b>Nivel</b><span id="nivel"></span></div>
+      <div><b>ID de usuario</b><span id="uid"></span></div>
+    </div>
+    <hr>
+    <h2>Estadísticas</h2>
+    <div class="stats">
+      <div class="stat"><span class="ico">🔥</span><div><div class="n" id="racha"></div><div class="l">días de racha</div></div></div>
+      <div class="stat"><span class="ico">⚡</span><div><div class="n" id="exp"></div><div class="l">EXP totales</div></div></div>
+      <div class="stat"><span class="ico">📈</span><div><div class="n" id="pct"></div><div class="l">progreso del curso</div></div></div>
+      <div class="stat"><span class="ico">🎯</span><div><div class="n" id="nivel2"></div><div class="l">nivel actual</div></div></div>
+    </div>
+    <hr>
+    <h2>Logros</h2>
+    <div id="logros"></div>
+  </div>
+  <div class="card">
+    <h2>Progreso del curso</h2>
+    <div class="barra"><i id="barra" style="width:0"></i></div>
+    <p class="sub" id="barraTxt"></p>
+    <a class="btn" href="unidad1.html">Continuar aprendiendo</a>
+  </div>
+</div>
+
+<div class="modal" id="modal" hidden>
+  <div class="box">
+    <h2>Editar perfil</h2>
+    <div class="av" id="prev">?</div>
+    <b class="lbl">Foto de perfil</b>
+    <div class="tabs"><button data-t="animal" class="on">🐾 Animal</button><button data-t="foto">📷 Mi foto</button></div>
+    <div id="tAn"></div>
+    <div id="tFoto" hidden>
+      <input type="file" id="archivo" accept="image/*">
+      <div id="ajustes" hidden>
+        <label>🔍 Zoom <input type="range" id="zoom" min="1" max="3" step="0.05" value="1"></label>
+        <label>↔️ Mover <input type="range" id="posX" min="-1" max="1" step="0.02" value="0"></label>
+        <label>↕️ Subir/bajar <input type="range" id="posY" min="-1" max="1" step="0.02" value="0"></label>
+      </div>
+      <button id="quitar">Quitar foto</button>
+    </div>
+    <b class="lbl">País</b>
+    <div class="ps"><span id="flag2"></span><select id="pais2"></select></div>
+    <p id="msg"></p>
+    <div class="acc"><button id="cancelar">Cancelar</button><button id="guardar">Guardar</button></div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const norm = t => (t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase();
+const MES = "enero febrero marzo abril mayo junio julio agosto septiembre octubre noviembre diciembre".split(" ");
+const fecha = f => { const [a, m, d] = (f || "").split("-"); return a && m && d ? `${+d} de ${MES[m - 1]} de ${a}` : f || "—"; };
+
+// Países (código ISO : nombre). Las banderas vienen de flagcdn.com; sin internet se usa la bandera emoji
+const PAISES = ("mx:México,us:Estados Unidos,ca:Canadá,gt:Guatemala,bz:Belice,sv:El Salvador,hn:Honduras,ni:Nicaragua,cr:Costa Rica,pa:Panamá,cu:Cuba,do:República Dominicana,ht:Haití,jm:Jamaica,pr:Puerto Rico,co:Colombia,ve:Venezuela,ec:Ecuador,pe:Perú,bo:Bolivia,cl:Chile,ar:Argentina,uy:Uruguay,py:Paraguay,br:Brasil,gy:Guyana,sr:Surinam,es:España,pt:Portugal,fr:Francia,it:Italia,de:Alemania,gb:Reino Unido,ie:Irlanda,nl:Países Bajos,be:Bélgica,ch:Suiza,at:Austria,se:Suecia,no:Noruega,dk:Dinamarca,fi:Finlandia,is:Islandia,pl:Polonia,cz:Chequia,hu:Hungría,ro:Rumania,gr:Grecia,ua:Ucrania,ru:Rusia,tr:Turquía,il:Israel,sa:Arabia Saudita,ae:Emiratos Árabes Unidos,eg:Egipto,ma:Marruecos,za:Sudáfrica,ng:Nigeria,ke:Kenia,et:Etiopía,gh:Ghana,cn:China,jp:Japón,kr:Corea del Sur,kp:Corea del Norte,in:India,pk:Pakistán,bd:Bangladés,th:Tailandia,vn:Vietnam,ph:Filipinas,id:Indonesia,my:Malasia,sg:Singapur,au:Australia,nz:Nueva Zelanda,gq:Guinea Ecuatorial")
+  .split(",").map(p => p.split(":")).sort((a, b) => a[1].localeCompare(b[1], "es"));
+const ALIAS = {usa: "us", eeuu: "us", "ee.uu.": "us"};
+const cod = n => ALIAS[norm(n)] || (PAISES.find(p => norm(p[1]) === norm(n)) || [])[0];
+const flag = c => c ? `<img class="fl" src="https://flagcdn.com/w40/${c}.png" srcset="https://flagcdn.com/w80/${c}.png 2x" alt="" onerror="this.outerHTML='<span class=fe>'+String.fromCodePoint(...'${c}'.toUpperCase().split('').map(x=>127397+x.charCodeAt()))+'</span>'">` : "";
+
+const ANIMALES = "🦊 🐰 🐱 🐶 🦉 🐸 🐼 🦋 🐢 🦎 🐺 🦌 🐻 🦅 🐿️ 🐆 🦜 🐙 🐬 🦄".split(" ");
+let U, av = "", pa = "", img = null;   // usuario, avatar y país en edición, foto cargada
+
+// Avatar: foto (data:image), animal (emoji:🦊) o inicial del nombre
+function pintar(el, v, n) {
+  const foto = v && v.startsWith("data:image/"), an = v && v.startsWith("emoji:");
+  el.classList.toggle("an", !!an);
+  if (foto) el.innerHTML = `<img alt="" src="${v}">`;
+  else el.textContent = an ? v.slice(6) : (n || "?")[0].toUpperCase();
+}
+function mostrar() {
+  pintar($("avatar"), U.avatar, U.nombre);
+  $("pais").innerHTML = flag(cod(U.pais));
+  $("pais").append(U.pais || "—");
+}
+function vista() {
+  pintar($("prev"), av, U.nombre);
+  document.querySelectorAll("#tAn button").forEach(b => b.classList.toggle("sel", "emoji:" + b.textContent === av));
+}
+
+// Foto: recorte cuadrado con zoom y movimiento, reducida a 256 px
+function dibujar() {
+  if (!img) return;
+  const c = document.createElement("canvas"), L = c.width = c.height = 256, x = c.getContext("2d");
+  const m = Math.min(img.width, img.height) / $("zoom").value, rx = (img.width - m) / 2, ry = (img.height - m) / 2;
+  x.fillStyle = "#fff"; x.fillRect(0, 0, L, L);
+  x.drawImage(img, rx + $("posX").value * rx, ry + $("posY").value * ry, m, m, 0, 0, L, L);
+  av = c.toDataURL("image/jpeg", 0.82);
+  vista();
+}
+function cargarFoto(src, blob) {
+  const i = new Image();
+  i.onload = () => {
+    if (blob) URL.revokeObjectURL(src);
+    img = i;
+    ["zoom", "posX", "posY"].forEach(k => $(k).value = k === "zoom" ? 1 : 0);
+    $("ajustes").hidden = false;
+    dibujar();
+  };
+  i.onerror = () => $("msg").textContent = "⚠️ No se pudo leer la imagen";
+  i.src = src;
+}
+const sinFoto = () => { img = null; $("archivo").value = ""; $("ajustes").hidden = true; };
+const tab = t => {
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.toggle("on", b.dataset.t === t));
+  $("tAn").hidden = t === "foto";
+  $("tFoto").hidden = t !== "foto";
+};
+
+function editar() {
+  av = U.avatar || ""; pa = U.pais || "";
+  $("msg").textContent = ""; sinFoto();
+  const c = cod(pa), nombres = PAISES.map(p => p[1]);
+  if (pa && !c) nombres.unshift(pa);   // país guardado que no está en la lista
+  $("pais2").replaceChildren(new Option("— Elige tu país —", ""), ...nombres.map(n => new Option(n, n)));
+  $("pais2").value = c ? PAISES.find(p => p[0] === c)[1] : pa;
+  $("flag2").innerHTML = flag(c);
+  vista();
+  if (av.startsWith("data:image/")) { tab("foto"); cargarFoto(av); } else tab("animal");
+  $("modal").hidden = false;
+}
+
+$("tAn").innerHTML = ANIMALES.map(a => `<button>${a}</button>`).join("");
+$("tAn").onclick = e => { const b = e.target.closest("button"); if (b) { av = "emoji:" + b.textContent; vista(); } };
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => tab(b.dataset.t));
+$("archivo").onchange = e => { const f = e.target.files[0]; if (f) { $("msg").textContent = ""; cargarFoto(URL.createObjectURL(f), 1); } };
+["zoom", "posX", "posY"].forEach(k => $(k).oninput = dibujar);
+$("quitar").onclick = () => { av = ""; sinFoto(); vista(); };
+$("pais2").onchange = () => { pa = $("pais2").value; $("flag2").innerHTML = flag(cod(pa)); };
+$("avatar").onclick = $("editar").onclick = editar;
+$("avatar").onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); editar(); } };
+$("cancelar").onclick = () => $("modal").hidden = true;
+$("modal").onclick = e => { if (e.target === $("modal")) e.target.hidden = true; };
+$("guardar").onclick = () => {
+  try { localStorage.setItem("perfil_" + U.id_usuario, JSON.stringify({pais: pa, avatar: av})); }
+  catch { $("msg").textContent = "⚠️ No se pudo guardar (la foto pesa mucho o el navegador no deja guardar)"; return; }
+  Object.assign(U, {pais: pa, avatar: av});
+  mostrar();
+  $("modal").hidden = true;
+};
+$("salir").onclick = async () => { await fetch("perfil_datos.php?salir=1"); location.href = "login.html"; };
+
+(async () => {
+  try {
+    const d = await (await fetch("perfil_datos.php")).json();
+    if (!d.estado) { if (d.login) { location.href = "login.html"; return; } throw new Error(d.mensaje); }
+    const u = U = d.usuario, p = d.progreso;
+    try {   // avatar y país elegidos en este navegador
+      const g = JSON.parse(localStorage.getItem("perfil_" + u.id_usuario)) || {};
+      if (g.avatar != null) u.avatar = g.avatar;
+      if (g.pais) u.pais = g.pais;
+    } catch {}
+    const set = (k, v) => $(k).textContent = v;
+    set("nombre", u.nombre); set("email", u.email); set("union", "Se unió el " + fecha(u.fecha_registro));
+    set("nac", fecha(u.fecha_nac)); set("nivel", u.nivel); set("nivel2", u.nivel); set("uid", "#" + u.id_usuario);
+    set("racha", p.racha); set("exp", p.experiencia); set("pct", p.porcentaje + "%"); set("barraTxt", p.porcentaje + "% completado");
+    mostrar();
+    $("logros").innerHTML = d.logros.map(l => `<div class="logro ${l.actual >= l.meta ? "hecho" : "pend"}"><span class="ico">${l.icono}</span>
+      <div class="info"><b>${l.titulo}</b><div class="barra"><i style="width:${Math.min(100, Math.round(l.actual / l.meta * 100))}%"></i></div></div>
+      <small>${Math.min(l.actual, l.meta)}/${l.meta}</small></div>`).join("");
+    $("contenido").hidden = false;
+    setTimeout(() => $("barra").style.width = Math.min(100, p.porcentaje) + "%", 100);
+  } catch (e) { $("errorMsg").textContent = "⚠️ " + e.message; $("error").hidden = false; }
+})();
+</script>
+</body>
+</html>

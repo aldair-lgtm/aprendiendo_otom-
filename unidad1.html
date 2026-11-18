@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendiendo...</title>
+    <link rel="stylesheet" href="duolingo.css">
+</head>
+<body>
+
+<header class="topbar">
+    <a href="index.html" class="cerrar" title="Salir">✕</a>
+    <div class="progreso-barra"><div class="progreso-relleno" id="progresoRelleno"></div></div>
+    <span class="progreso-texto" id="progresoTexto">0%</span>
+    <a href="perfil.html" class="enlace-perfil" title="Mi perfil">👤</a>
+    <span id="vidas">❤️ 5</span>
+</header>
+
+<div id="gameover">
+    <div class="gameover-caja">
+        <h1>💔 Te quedaste sin vidas</h1>
+        <p>No te rindas, intentalo otra vez!</p>
+        <button class="comprobar" onclick="location.reload()">INTENTAR DE NUEVO</button>
+    </div>
+</div>
+
+<!-- LECCION 1 -->
+<section id="leccion1" class="activa">
+    <h3>Nueva palabra</h3>
+    <h1>Cual de estos es Rosa?</h1>
+    <div class="container">
+        <div class="card" data-audio="audio2" data-correcta="true"><img src="img/rosa.png" alt="rosa"><h3>Roxa</h3></div>
+        <div class="card" data-audio="audio1"><img src="img/naranja.jpg" alt="naranja"><h3>Naraxa</h3></div>
+        <div class="card" data-audio="audio3"><img src="img/cafe.png" alt="cafe"><h3>Boxo</h3></div>
+    </div>
+    <div class="botones">
+        <button class="comprobar" onclick="comprobar()">COMPROBAR</button>
+        <button class="saltar" onclick="siguiente()">SALTAR</button>
+    </div>
+    <p class="resultado"></p>
+</section>
+
+<!-- LECCION 2 -->
+<section id="leccion2">
+    <h3>Nueva palabra</h3>
+    <h1>Cual de estos es el Cafe?</h1>
+    <div class="container">
+        <div class="card" data-audio="audio1"><img src="img/naranja.jpg" alt="naranja"><h3>Naraxa</h3></div>
+        <div class="card" data-audio="audio3" data-correcta="true"><img src="img/cafe.png" alt="cafe"><h3>Boxo</h3></div>
+        <div class="card"><img src="img/verde.png" alt="verde"><h3>K'apaxi</h3></div>
+    </div>
+    <div class="botones">
+        <button class="comprobar" onclick="comprobar()">COMPROBAR</button>
+        <button class="saltar" onclick="siguiente()">SALTAR</button>
+    </div>
+    <p class="resultado"></p>
+</section>
+
+<!-- LECCION 3 -->
+<section id="leccion3">
+    <h3>Nueva palabra</h3>
+    <h1>Cual de estos es un Te?</h1>
+    <div class="container">
+        <div class="card" data-audio="audio1"><img src="img/naranja.jpg" alt="naranja"><h3>Naraxa</h3></div>
+        <div class="card" data-audio="audio3"><img src="img/cafe.png" alt="cafe"><h3>Boxo</h3></div>
+        <div class="card" data-correcta="true"><img src="img/te.jpg" alt="te"><h3>Uthe</h3></div>
+    </div>
+    <div class="botones">
+        <button class="comprobar" onclick="comprobar()">COMPROBAR</button>
+        <button class="saltar" onclick="siguiente()">SALTAR</button>
+    </div>
+    <p class="resultado"></p>
+</section>
+
+<!-- LECCION 4 -->
+<section id="leccion4">
+    <h3>Traduzcamos la palabra</h3>
+    <h1>Que significa BOXO en español?</h1>
+    <div class="container">
+        <div class="card"><h3>Naranja</h3></div>
+        <div class="card" data-correcta="true"><h3>Cafe</h3></div>
+        <div class="card"><h3>Verde</h3></div>
+    </div>
+    <div class="botones">
+        <button class="comprobar" onclick="comprobar()">COMPROBAR</button>
+        <button class="saltar" onclick="siguiente()">SALTAR</button>
+    </div>
+    <p class="resultado"></p>
+</section>
+
+<!-- LECCION 5 -->
+<section id="leccion5" data-respuesta="te">
+    <h3>Traduzcamos la palabra</h3>
+    <h1>Escribe UTHE en español</h1>
+    <input type="text" class="entrada" placeholder="Escribe aqui..." autocomplete="off">
+    <div class="botones">
+        <button class="comprobar" onclick="comprobar()">COMPROBAR</button>
+        <button class="saltar" onclick="siguiente()">SALTAR</button>
+    </div>
+    <p class="resultado"></p>
+</section>
+
+<audio id="audio1" src="audio/Naranxa.ogg"></audio>
+<audio id="audio2" src="audio/Roxa.ogg"></audio>
+<audio id="audio3" src="audio/boxo.ogg"></audio>
+
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const norm = t => t.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+const TOTAL = document.querySelectorAll("section").length;
+let actual = 1, puntaje = 0, vidas = 5, comprobado = false;
+
+const sec = () => $("#leccion" + actual);
+
+function actualizarVidas(animar) {
+    const el = $("#vidas");
+    el.textContent = vidas > 0 ? "❤️ " + vidas : "💔 0";
+    if (animar) { el.classList.remove("perdida"); void el.offsetWidth; el.classList.add("perdida"); }
+}
+
+function mensaje(titulo, detalle) {
+    const r = $(".resultado", sec());
+    r.textContent = titulo;
+    if (detalle) r.insertAdjacentHTML("beforeend", `<small>${detalle}</small>`);
+}
+
+// Seleccionar tarjeta (y reproducir audio si lo tiene)
+document.addEventListener("click", e => {
+    const card = e.target.closest(".card");
+    if (!card || comprobado) return;
+    card.closest("section").querySelectorAll(".card").forEach(c => c.classList.remove("seleccionada"));
+    card.classList.add("seleccionada");
+
+    const audio = document.getElementById(card.dataset.audio);
+    if (audio) { audio.currentTime = 0; audio.play().catch(() => {}); }
+});
+
+// Enter = comprobar
+document.addEventListener("keydown", e => {
+    if (e.key === "Enter" && e.target.matches(".entrada")) comprobar();
+});
+
+function comprobar() {
+    if (comprobado) return siguiente();
+
+    const s = sec();
+    let acerto, correcto = "";
+
+    if (s.dataset.respuesta) {
+        const valor = $("input", s).value;
+        if (!valor.trim()) return mensaje("Escribe una respuesta primero.");
+        acerto = norm(valor) === norm(s.dataset.respuesta);
+        correcto = s.dataset.respuesta.toUpperCase();
+    } else {
+        const elegida = $(".card.seleccionada", s);
+        if (!elegida) return mensaje("Elige una opcion primero.");
+        acerto = elegida.dataset.correcta === "true";
+        elegida.classList.replace("seleccionada", acerto ? "correcta" : "incorrecta");
+        if (!acerto) {
+            const buena = $('.card[data-correcta="true"]', s);
+            buena.classList.add("correcta");
+            correcto = $("h3", buena).textContent.trim();
+        }
+    }
+
+    comprobado = true;
+
+    if (acerto) {
+        puntaje += 10;
+        s.classList.add("ok");
+        mensaje("Excelente! 🎉");
+    } else {
+        vidas--;
+        actualizarVidas(true);
+        s.classList.add("mal");
+        mensaje("Incorrecto", "Respuesta correcta: " + correcto);
+        if (vidas <= 0) return $("#gameover").classList.add("visible");
+    }
+    $(".comprobar", s).textContent = "CONTINUAR";
+}
+
+function siguiente() {
+    comprobado = false;
+    sec().classList.remove("activa");
+    const pct = Math.round(actual / TOTAL * 100);
+    $("#progresoRelleno").style.width = pct + "%";
+    $("#progresoTexto").textContent = pct + "%";
+
+    if (actual >= TOTAL) return final();
+    actual++;
+    sec().classList.add("activa");
+    scrollTo(0, 0);
+}
+
+function final() {
+    if (puntaje <= 0) {
+        alert("Terminaste la leccion, pero no ganaste puntos. Intentalo otra vez!");
+        return location.href = "index.html";
+    }
+    fetch("actualizar_progreso.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ experienciaGanada: puntaje })
+    })
+    .then(r => r.json())
+    .then(d => {
+        if (d.success) {
+            alert(`🎉 Felicidades!\n\nGanaste ${puntaje} puntos.\nTu progreso ha sido actualizado.`);
+            location.href = "index.html";
+        } else {
+            alert("Error: " + d.mensaje);
+            if (norm(d.mensaje || "").includes("iniciar sesion")) location.href = "login.html";
+        }
+    })
+    .catch(() => alert(`Terminaste la leccion con ${puntaje} puntos, pero hubo un error de conexion con el servidor.`));
+}
+
+actualizarVidas();
+</script>
+
+</body>
+</html>
